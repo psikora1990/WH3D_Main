@@ -61,21 +61,20 @@ public class WarehouseGrid : MonoBehaviour
     }
 
     /// <summary>
-    /// Places a GameObject into a specific grid cell and snaps it to the cell world position.
+    /// Instantiates a prefab into a specific grid cell and snaps it to the center of that tile.
     /// </summary>
-    public bool PlaceObject(GameObject obj, int x, int y)
+    public bool PlaceObject(GameObject prefab, int x, int y)
     {
-        if (obj == null || !IsCellFree(x, y))
+        if (prefab == null || !IsCellFree(x, y))
         {
             return false;
         }
 
         GridCell cell = gridCells[x, y];
-        cell.IsOccupied = true;
-        cell.OccupiedObject = obj;
+        GameObject instance = Instantiate(prefab, GetCellCenterWorldPosition(x, y), prefab.transform.rotation);
 
-        // Snap object to exact cell coordinate on the XZ plane.
-        obj.transform.position = cell.WorldPosition;
+        cell.IsOccupied = true;
+        cell.OccupiedObject = instance;
         return true;
     }
 
@@ -105,6 +104,20 @@ public class WarehouseGrid : MonoBehaviour
         }
 
         return gridCells[x, y].WorldPosition;
+    }
+
+
+    /// <summary>
+    /// Returns the center point of a grid cell for snapping highlight/ghost/buildings.
+    /// </summary>
+    public Vector3 GetCellCenterWorldPosition(int x, int y)
+    {
+        if (!IsInBounds(x, y))
+        {
+            return Vector3.positiveInfinity;
+        }
+
+        return gridCells[x, y].WorldPosition + new Vector3(cellSize * 0.5f, 0f, cellSize * 0.5f);
     }
 
     /// <summary>
