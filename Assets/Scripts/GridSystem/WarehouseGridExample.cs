@@ -34,12 +34,7 @@ public class WarehouseGridExample : MonoBehaviour
         // Left click places one prefab instance if cell is free.
         if (Input.GetMouseButtonDown(0) && placeablePrefab != null)
         {
-            GameObject instance = Instantiate(placeablePrefab);
-            bool placed = warehouseGrid.PlaceObject(instance, x, y);
-            if (!placed)
-            {
-                Destroy(instance);
-            }
+            warehouseGrid.PlaceObject(placeablePrefab, x, y);
         }
 
         // Right click removes object reference from selected cell.
