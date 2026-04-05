@@ -45,7 +45,13 @@ public class WorkerController : MonoBehaviour
 
     private void Update()
     {
-        if (taskManager == null || navMeshAgent == null)
+        if (taskManagerBehaviour == null || navMeshAgent == null)
+        {
+            return;
+        }
+
+        taskManager = taskManagerBehaviour as IWarehouseTaskManager;
+        if (taskManager == null)
         {
             return;
         }
@@ -75,7 +81,12 @@ public class WorkerController : MonoBehaviour
 
         currentTask = nextTask;
         navMeshAgent.isStopped = false;
-        navMeshAgent.SetDestination(currentTask.Position);
+        if (!navMeshAgent.SetDestination(currentTask.Position))
+        {
+            currentTask = default;
+            return;
+        }
+
         CurrentState = WorkerState.MovingToTask;
     }
 
